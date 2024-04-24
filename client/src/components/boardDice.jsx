@@ -1,22 +1,44 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addBar, deleteBar } from '../redux/dataSlice';
 
 
 
 const BoardDice = () => {
+    const {currentData} = useSelector((state)=>state.data)
     const [um,setUm] = useState([])
     const [dois,setDois] = useState([])
     const [tres,setTres] = useState([])
     const [quatro,setQuatro] = useState([])
     const [cinco,setCinco] = useState([])
     const [seis,setSeis] = useState([])
-    const [escala,setEscala] = useState(25)
+    const [escala,setEscala] = useState(10)
     const [update,setUpdate] = useState(false)
     const ref = useRef(false)
     const [height,setHeight] = useState(0)
+    console.log(currentData)
     console.log(height)
-    const numb = 100/escala
+
+    const dispatch = useDispatch()
+    
     
     const add = (e)=>{
+        if(e == 1){
+            dispatch(addBar({type:"dado",number:"um"}))
+        }else if(e==2){
+            dispatch(addBar({type:"dado",number:"dois"}))
+        }else if(e==3){
+            setTres([...tres,1])
+        }else if(e==4){
+            setQuatro([...quatro,1])
+        }else if(e==5){
+            setCinco([...cinco,1])
+        }else if(e==6){
+            setSeis([...seis,1])
+        }
+    }
+    const addRandomBar=()=>{
+        let e = Math.floor(Math.random() * 7)
         if(e == 1){
             setUm([...um,1])
         }else if(e==2){
@@ -33,8 +55,7 @@ const BoardDice = () => {
     }
     const barDelete = (e)=>{
         if(e == 1){
-            const novoArray = um.slice(0, -1); 
-            setUm(novoArray);
+            dispatch(deleteBar({type:"dado"}));
         }else if(e==2){
             const novoArray = dois.slice(0, -1); 
             setDois(novoArray);
@@ -87,7 +108,7 @@ const BoardDice = () => {
                         {/* <div className='w-full h-full bg-blue-700'>
                             
                         </div> */}
-                        {um && um.map(()=>(
+                        {currentData.boardDice.um && currentData.boardDice.um.map(()=>(
                             // <div className={`bg-blue-700 w-full h-[${height}px]`}>.</div>
                             <div style={{height: height+"px"} }className={`p-[1px] w-full`}>
                                 <div className='w-full h-full bg-blue-700'></div>
@@ -98,7 +119,7 @@ const BoardDice = () => {
                         {/* <div className='w-full h-full bg-blue-700'>
                             
                         </div> */}
-                        {dois && dois.map(()=>(
+                        {currentData.boardDice.dois && currentData.boardDice.dois.map(()=>(
                             // <div className={`bg-blue-700 w-full h-[${height}px]`}>.</div>
                             <div style={{height: height+"px"} }className={`p-[1px] w-full`}>
                                 <div className='w-full h-full bg-blue-700'></div>
@@ -175,10 +196,9 @@ const BoardDice = () => {
                 
             </div>
             
-             {/* <button onClick={()=>(
-                setUm(prev => prev+1),
-                view())
-                }>add</button> */}
+            <div className='absolute -bottom-14 left-0'>
+                <button onClick={()=>addRandomBar()} className='p-2 border border-gray-700 rounded-md bg-lime-600 text-white cursor-pointer hover:bg-opacity-80'>Resultado aleatorio</button>
+            </div>
         </div>
     );
 };
